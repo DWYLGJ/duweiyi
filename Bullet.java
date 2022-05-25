@@ -6,9 +6,9 @@ import java.util.List;
 public class Bullet extends GameObject{
     //长宽
     private int width = 10;
-    private int height = 20;
+    private int height = 10;
     //速度
-    private int speed = 20;
+    private int speed = 8;
     //方向
     Direction direction;
     //构造函数
@@ -18,6 +18,7 @@ public class Bullet extends GameObject{
     }
 
     public void go(){
+        moveToBorder();
         switch (direction){
             case UP:
                 upward();
@@ -32,10 +33,9 @@ public class Bullet extends GameObject{
                 rightward();
                 break;
         }
-        this.hitWall();
     }
 
-  //子弹与坦克碰撞检测
+    /**子弹与坦克碰撞检测*/
     public void hitBot(){
         Rectangle next= this.getRec();
         List<Bot> bots = this.gamePanel.botList;
@@ -49,33 +49,41 @@ public class Bullet extends GameObject{
             }
         }
     }
-    //子弹与围墙碰撞检测
-    public void hitWall(){
-       //围墙列表
-    	Rectangle next = this.getRec();
+
+    public void hitWall() {
+        Rectangle next = this.getRec();
         List<Wall> walls = this.gamePanel.wallList;
-        for(Wall w: walls) {
-           //与每一个围墙进行碰撞检测
-        	if (w.getRec().intersects(next)) {
-                //删去围墙和子弹
-        		this.gamePanel.wallList.remove(w);
+        for (Wall w : walls) {
+            if (w.getRec().intersects(next)) {
+                this.gamePanel.wallList.remove(w);
                 this.gamePanel.removeList.add(this);
-                //停止循环
-                break;  
+                break;
             }
         }
     }
+
+    public void moveToBorder(){
+        if (x < 0||x > this.gamePanel.getWidth()) {
+            this.gamePanel.removeList.add(this);
+            System.out.println("bullet hit border");
+        }
+        if(y < 0||y > this.gamePanel.getHeight()){
+            this.gamePanel.removeList.add(this);
+            System.out.println("bullet hit border");
+        }
+    }
+
     public void leftward(){
-        x -= speed;
+       x = x -speed;
     }
     public void rightward(){
-        x += speed;
+       x =x + speed;
     }
     public void upward(){
-        y -= speed;
+        y= y -speed;
     }
     public void downward(){
-        y += speed;
+        y=y + speed;
     }
 
     @Override
@@ -83,6 +91,7 @@ public class Bullet extends GameObject{
         g.drawImage(img, x, y, null);
         go();
         hitBot();
+        hitWall();
     }
 
     @Override

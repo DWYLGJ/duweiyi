@@ -8,8 +8,26 @@ public class EnemyBullet extends Bullet {
         super(img, x, y, direction, gamePanel);
     }
 
+    public void hitPlayer(){
+        Rectangle next= this.getRec();
+        java.util.List<Tank> tanks = this.gamePanel.tankList;
+        //×Óµ¯ºÍTank
+        for(Tank tank: tanks){
+            if(tank.getRec().intersects(next)){
+                System.out.println("hit tank");
+                tank.alive = false;
+                this.gamePanel.tankList.remove(tank);
+                this.gamePanel.removeList.add(this);
+                break;
+
+            }
+        }
+    }
+
     public void paintSelf(Graphics g){
         g.drawImage(img, x, y, null);
         go();
+        hitPlayer();
+        hitWall();
     }
 }
