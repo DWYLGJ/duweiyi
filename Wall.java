@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class Wall extends GameObject {
 
-    public int width = 30;
-    public int height = 30;
+    public int width = 60;
+    public int height = 80;
     public Wall(String img, int x, int y, GamePanel gamePanel){
         super(img, x, y, gamePanel);
     }
