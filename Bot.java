@@ -3,18 +3,68 @@ package com.sxt;
 import java.awt.*;
 import java.util.Random;
 
-public class Bot extends Tank {
+public class Bot extends Tank{
+    int moveTime = 0;
+    public Bot(String img, int x, int y, String upImage, String downImage, String leftImage, String rightImage, GamePanel gamePanel) {
+        super(img, x, y, upImage, downImage, leftImage, rightImage, gamePanel);
+    }
 
-	public Bot(String img, int x, int y, String upImage, String downImage,
-			String leftImage, String rightImage,
-			GamePanel gamePanel) {
-		super(img, x, y, upImage, downImage, leftImage, rightImage, gamePanel);
-		// TODO Auto-generated constructor stub
-	}
+    public void go(){
+        attack();
+        if(moveTime>=20) {
+            direction=randomDirection();
+            moveTime=0;
+        }else {
+            moveTime+=1;
+        }
+        switch(direction) {
+            case UP:
+                upward();
+                break;
+            case DOWN:
+                downward();
+                break;
+            case RIGHT:
+                rightward();
+                break;
+            case LEFT:
+                leftward();
+                break;
+        }
+    }
 
-	@Override
+    //电脑坦克随机方向
+    public Direction randomDirection() {
+        Random r = new Random();
+        int rnum = r.nextInt(4);
+        switch(rnum) {
+            case 0:
+                return Direction.UP;
+            case 1:
+                return Direction.RIGHT;
+            case 2:
+                return Direction.LEFT;
+            default:
+                return Direction.DOWN;
+        }
+    }
+
+    //只有4%几率攻击
+    public void attack() {
+        Point p = getHeadPoint();
+        Random r = new Random();
+        int rnum =r.nextInt(500);
+        //System.out.println("r: "+rnum);
+        if(rnum<4) {
+            EnemyBullet enemyBullet = new EnemyBullet("src/Images/images/bullet/bulletYellow.gif",p.x,p.y,direction,gamePanel);
+            this.gamePanel.bulletList.add(enemyBullet);
+        }
+    }
+
+    @Override
     public void paintSelf(Graphics g) {
         g.drawImage(img,x,y,null);
+        this.go();
     }
 
     @Override
